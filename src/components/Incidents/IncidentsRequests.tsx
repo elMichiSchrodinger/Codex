@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Edit, CheckCircle, Clock } from 'lucide-react';
 import { Modal } from '../Common/Modal';
 import { StatusBadge } from '../Common/StatusBadge';
+import { AIInsights } from '../Chatbot/AIInsights';
 import { Incident, Request } from '../../types';
 import { mockIncidents, mockRequests } from '../../data/mockData';
 
@@ -149,51 +150,61 @@ export function IncidentsRequests() {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {currentData.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {item.id}
-                </td>
-                <td className="px-6 py-4">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">{item.title}</div>
-                    <div className="text-sm text-gray-500 truncate max-w-xs">{item.description}</div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <StatusBadge status={item.priority} type="priority" />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <StatusBadge status={item.status} />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {activeTab === 'incidents' 
-                    ? (item as Incident).assignee || 'Unassigned'
-                    : (item as Request).requester
-                  }
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {item.createdAt.toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                  <button
-                    onClick={() => handleOpenModal(item)}
-                    className="text-indigo-600 hover:text-indigo-900 p-1"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  {item.status !== 'closed' && item.status !== 'resolved' && item.status !== 'completed' && (
+              <React.Fragment key={item.id}>
+                <tr className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {item.id}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{item.title}</div>
+                      <div className="text-sm text-gray-500 truncate max-w-xs">{item.description}</div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <StatusBadge status={item.priority} type="priority" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <StatusBadge status={item.status} />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {activeTab === 'incidents' 
+                      ? (item as Incident).assignee || 'Unassigned'
+                      : (item as Request).requester
+                    }
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {item.createdAt.toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                     <button
-                      onClick={() => handleStatusChange(
-                        item.id, 
-                        activeTab === 'incidents' ? 'resolved' : 'completed'
-                      )}
-                      className="text-green-600 hover:text-green-900 p-1"
+                      onClick={() => handleOpenModal(item)}
+                      className="text-indigo-600 hover:text-indigo-900 p-1"
                     >
-                      <CheckCircle className="w-4 h-4" />
+                      <Edit className="w-4 h-4" />
                     </button>
-                  )}
-                </td>
-              </tr>
+                    {item.status !== 'closed' && item.status !== 'resolved' && item.status !== 'completed' && (
+                      <button
+                        onClick={() => handleStatusChange(
+                          item.id, 
+                          activeTab === 'incidents' ? 'resolved' : 'completed'
+                        )}
+                        className="text-green-600 hover:text-green-900 p-1"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+                {/* AI Insights Row */}
+                {activeTab === 'incidents' && item.priority === 'high' && (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-2">
+                      <AIInsights data={item} type="incident" />
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>

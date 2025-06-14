@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Edit, AlertTriangle } from 'lucide-react';
 import { Modal } from '../Common/Modal';
 import { StatusBadge } from '../Common/StatusBadge';
+import { AIInsights } from '../Chatbot/AIInsights';
 import { Risk } from '../../types';
 import { mockRisks } from '../../data/mockData';
 
@@ -141,34 +142,44 @@ export function Risks() {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {risks.map((risk) => (
-              <tr key={risk.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">{risk.description}</div>
-                    <div className="text-sm text-gray-500 mt-1">Mitigation: {risk.mitigation}</div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <StatusBadge status={risk.impact} type="priority" />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <StatusBadge status={risk.probability} type="priority" />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <StatusBadge status={risk.priority} type="priority" />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <StatusBadge status={risk.status} />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button
-                    onClick={() => handleOpenModal(risk)}
-                    className="text-indigo-600 hover:text-indigo-900 p-1"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
+              <React.Fragment key={risk.id}>
+                <tr className="hover:bg-gray-50">
+                  <td className="px-6 py-4">
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">{risk.description}</div>
+                      <div className="text-sm text-gray-500 mt-1">Mitigation: {risk.mitigation}</div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <StatusBadge status={risk.impact} type="priority" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <StatusBadge status={risk.probability} type="priority" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <StatusBadge status={risk.priority} type="priority" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <StatusBadge status={risk.status} />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button
+                      onClick={() => handleOpenModal(risk)}
+                      className="text-indigo-600 hover:text-indigo-900 p-1"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+                {/* AI Insights Row for high priority risks */}
+                {(risk.priority === 'critical' || risk.priority === 'high') && (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-2">
+                      <AIInsights data={risk} type="risk" />
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>

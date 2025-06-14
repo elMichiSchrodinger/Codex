@@ -12,6 +12,7 @@
   "dependencies": {
     "jspdf": "^2.5.1",
     "lucide-react": "^0.344.0",
+    "openai": "^4.24.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "recharts": "^2.8.0",

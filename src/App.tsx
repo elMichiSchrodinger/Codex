@@ -11,9 +11,12 @@ import { Reports } from './components/Reports/Reports';
 import { Risks } from './components/Risks/Risks';
 import { Assets } from './components/Assets/Assets';
 import { Problems } from './components/Problems/Problems';
+import { Chatbot } from './components/Chatbot/Chatbot';
+import { ChatbotButton } from './components/Chatbot/ChatbotButton';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -42,6 +45,14 @@ function App() {
     }
   };
 
+  const toggleChatbot = () => {
+    setIsChatbotOpen(!isChatbotOpen);
+  };
+
+  const closeChatbot = () => {
+    setIsChatbotOpen(false);
+  };
+
   return (
     <AuthProvider>
       <div className="flex h-screen bg-gray-100">
@@ -51,6 +62,17 @@ function App() {
             {renderContent()}
           </div>
         </main>
+        
+        {/* Chatbot Components */}
+        <ChatbotButton 
+          isOpen={isChatbotOpen} 
+          onClick={toggleChatbot}
+        />
+        <Chatbot 
+          isOpen={isChatbotOpen} 
+          onToggle={toggleChatbot}
+          onClose={closeChatbot}
+        />
       </div>
     </AuthProvider>
   );
